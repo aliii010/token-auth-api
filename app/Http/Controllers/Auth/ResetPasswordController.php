@@ -3,19 +3,13 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use Illuminate\Validation\Rules\Password;
+use App\Http\Requests\ResetPasswordRequest;
 use Illuminate\Support\Facades\Hash;
 
 class ResetPasswordController extends Controller
 {
-    public function resetPassword(Request $request)
+    public function resetPassword(ResetPasswordRequest $request)
     {
-        $request->validate([
-            'current_password' => 'required',
-            'new_password' => ['required', 'confirmed', Password::defaults()],
-        ]);
-
         $user = $request->user();
 
         if (!Hash::check($request->current_password, $user->password)) {
@@ -25,7 +19,7 @@ class ResetPasswordController extends Controller
         }
 
         $user->update([
-            'password' => Hash::make($request->new_password),
+            'password' => $request->new_password,
         ]);
 
         return response()->json([
