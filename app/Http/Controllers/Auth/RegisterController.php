@@ -15,6 +15,8 @@ class RegisterController extends Controller
 
         $user = User::create($fields);
 
+        $user->sendOTPCode();
+
         return response()->json([
             'user' => $user,
             'token' => $user->createToken($user->email)->plainTextToken,
