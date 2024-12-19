@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\EmailVerifyRequest;
+use Illuminate\Http\Request;
 
 class EmailVerificationController extends Controller
 {
@@ -23,6 +24,15 @@ class EmailVerificationController extends Controller
         $user->save();
         return response()->json([
             'message' => 'Email has been verified.'
+        ], 200);
+    }
+
+    public function resend(Request $request)
+    {
+        $user = $request->user();
+        $user->sendOTPCode();
+        return response()->json([
+            'message' => 'Email verification link has been sent.'
         ], 200);
     }
 }

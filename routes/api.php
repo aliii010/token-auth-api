@@ -22,6 +22,7 @@ Route::prefix('/auth')->group(function () {
     Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('/logout', [LoginController::class, 'logout']);
         Route::post('/verify', [EmailVerificationController::class, 'verify']);
+        Route::post('/resend-verification', [EmailVerificationController::class, 'resend']);
         Route::post('/reset-password', [ResetPasswordController::class, 'resetPassword']);
     });
 });
