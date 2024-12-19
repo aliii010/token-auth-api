@@ -7,6 +7,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Controllers\Auth\EmailVerificationController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -20,6 +21,7 @@ Route::prefix('/auth')->group(function () {
     // Protected routes
     Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('/logout', [LoginController::class, 'logout']);
+        Route::post('/verify', [EmailVerificationController::class, 'verify']);
         Route::post('/reset-password', [ResetPasswordController::class, 'resetPassword']);
     });
 });
