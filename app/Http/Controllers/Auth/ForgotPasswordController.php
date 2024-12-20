@@ -3,14 +3,38 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Password;
-use Illuminate\Validation\ValidationException;
+use App\Http\Requests\ForgotPasswordRequest;
 use App\Models\User;
+use App\Models\PasswordResetToken;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
+use App\Notifications\SendResetPasswordLink;
 
 class ForgotPasswordController extends Controller
 {
-    // TODO: implement forgot password
+    public function forgotPassword(ForgotPasswordRequest $request)
+    {
+        $user = User::where('email', $request->email)->first();
+
+        if (!$user) {
+            return response()->json([
+                "message" => "If your email exists in our system, you will receive a password reset link."
+            ]);
+        }
+
+        $resetToken = PasswordResetToken::where('email', $user->email)->first();
+        if (!$resetToken) {
+            $resetToken = PasswordResetToken::create([
+                'email' => $user->email,
+                'token' => Hash::make(Str::random(60)),
+                'created_at' => now()
+            ]);
+        }
+
+        $user->notify(new SendResetPasswordLink($resetToken->token));
+
+        return response()->json([
+            "message" => "If your email exists in our system, you will receive a password reset link."
+        ]);
+    }
 }
