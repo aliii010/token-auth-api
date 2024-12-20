@@ -9,6 +9,7 @@ use App\Models\PasswordResetToken;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use App\Notifications\SendResetPasswordLink;
+use App\Http\Requests\ResetPasswordVerifyRequest;
 
 class ForgotPasswordController extends Controller
 {
@@ -36,5 +37,11 @@ class ForgotPasswordController extends Controller
         return response()->json([
             "message" => "If your email exists in our system, you will receive a password reset link."
         ]);
+    }
+
+    public function verify(ResetPasswordVerifyRequest $request)
+    {
+        // TODO: complete this method
+
     }
 }

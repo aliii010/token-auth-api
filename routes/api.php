@@ -18,6 +18,7 @@ Route::prefix('/auth')->group(function () {
     Route::post('/register', [RegisterController::class, 'register']);
     Route::post('/login', [LoginController::class, 'login']);
     Route::post('/forgot-password', [ForgotPasswordController::class, 'forgotPassword']);
+    Route::post('/forgot-password-verify', [ForgotPasswordController::class, 'verify']); // TODO: complete this route
 
     // Protected routes
     Route::middleware(['auth:sanctum'])->group(function () {
