@@ -38,7 +38,10 @@ class SendResetPasswordLink extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->line('Please click this link to reset your password: ' . "http://localhost:3000/forgot-passowrd/" . $this->token);
+            ->subject('Reset Your Password')
+            ->line('You are receiving this email because we received a password reset request for your account.')
+            ->action('Reset Password', 'http://localhost:3000/forgot-password/' . $this->token)
+            ->line('If you did not request a password reset, no further action is required.');
     }
 
     /**

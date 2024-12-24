@@ -23,16 +23,17 @@ class ForgotPasswordController extends Controller
             ]);
         }
 
+        $token = Str::random(60);
         $resetToken = PasswordResetToken::where('email', $user->email)->first();
         if (!$resetToken) {
             $resetToken = PasswordResetToken::create([
                 'email' => $user->email,
-                'token' => Hash::make(Str::random(60)),
+                'token' => Hash::make($token),
                 'created_at' => now()
             ]);
         }
 
-        $user->notify(new SendResetPasswordLink($resetToken->token));
+        $user->notify(new SendResetPasswordLink($token));
 
         return response()->json([
             "message" => "If your email exists in our system, you will receive a password reset link."
@@ -41,7 +42,21 @@ class ForgotPasswordController extends Controller
 
     public function verify(ResetPasswordVerifyRequest $request)
     {
-        // TODO: complete this method
+        $passwordReset = PasswordResetToken::where('email', $request->email)->first();
 
+        if (!$passwordReset || !Hash::check($request->token, $passwordReset->token)) {
+            return response()->json(['message' => 'Invalid token.'], 400);
+        }
+
+        $user = User::where('email', $request->email)->first();
+        $user->update([
+            'password' => $request->new_password
+        ]);
+
+        $passwordReset->delete();
+
+        return response()->json([
+            'message' => 'Password has been reset.'
+        ], 200);
     }
 }
